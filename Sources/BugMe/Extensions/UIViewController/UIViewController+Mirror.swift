@@ -18,176 +18,194 @@ public extension UIViewController {
             switch child.value {
             case let button as UIButton:
                 let label: String = child.label ?? "No label found"
-                osLog("Captured UIButton: \(label)")
-                osLog("-- Properties --")
-                osLog("  - Title: \(button.title(for: .normal) ?? "nil")")
-                osLog("  - State: \(button.state.rawValue)")
-                osLog("  - Enabled: \(button.isEnabled)")
-                osLog("  - Hidden: \(button.isHidden)")
-                osLog("  - Frame: \(button.frame)")
-                osLog("  - Tag: \(button.tag)")
+                var properties = "Captured UIButton: \(label)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Title: \(button.title(for: .normal) ?? "nil")\n"
+                properties += "  - State: \(button.state.rawValue)\n"
+                properties += "  - Enabled: \(button.isEnabled)\n"
+                properties += "  - Hidden: \(button.isHidden)\n"
+                properties += "  - Frame: \(button.frame)\n"
+                properties += "  - Tag: \(button.tag)"
+                
                 if let imageData = button.currentImage?.pngData() {
                     let path = try? saveToDocuments(data: imageData, fileName: "button_\(label)_image", fileExtension: "png")
-                    osLog("  - Image Path: \(path?.absoluteString ?? "nil")")
+                    properties += "\n  - Image Path: \(path?.absoluteString ?? "nil")"
                 }
+                osLog(properties)
 
             case let label as UILabel:
                 let name = child.label ?? "No label found"
-                osLog("Captured UILabel: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Text: \(label.text ?? "nil")")
-                osLog("  - Text Color: \(label.textColor)")
-                osLog("  - Font: \(label.font)")
-                osLog("  - Lines: \(label.numberOfLines)")
-                osLog("  - Alignment: \(label.textAlignment.rawValue)")
-                osLog("  - Hidden: \(label.isHidden)")
-                osLog("  - Frame: \(label.frame)")
+                var properties = "Captured UILabel: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Text: \(label.text ?? "nil")\n"
+                properties += "  - Text Color: \(label.textColor)\n"
+                properties += "  - Font: \(label.font)\n"
+                properties += "  - Lines: \(label.numberOfLines)\n"
+                properties += "  - Alignment: \(label.textAlignment.rawValue)\n"
+                properties += "  - Hidden: \(label.isHidden)\n"
+                properties += "  - Frame: \(label.frame)"
+                osLog(properties)
 
             case let imageView as UIImageView:
                 let name = child.label ?? "No label found"
-                osLog("Captured UIImageView: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Content Mode: \(imageView.contentMode.rawValue)")
-                osLog("  - Has Image: \(imageView.image != nil)")
-                osLog("  - Hidden: \(imageView.isHidden)")
-                osLog("  - Frame: \(imageView.frame)")
+                var properties = "Captured UIImageView: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Content Mode: \(imageView.contentMode.rawValue)\n"
+                properties += "  - Has Image: \(imageView.image != nil)\n"
+                properties += "  - Hidden: \(imageView.isHidden)\n"
+                properties += "  - Frame: \(imageView.frame)"
+                
                 if let imageData = imageView.image?.pngData() {
                     let path = try? saveToDocuments(data: imageData, fileName: "imageView_\(name)_image", fileExtension: "png")
-                    osLog("  - Image Path: \(path?.absoluteString ?? "nil")")
+                    properties += "\n  - Image Path: \(path?.absoluteString ?? "nil")"
                 }
+                osLog(properties)
 
             case let textField as UITextField:
                 let name = child.label ?? "No label found"
-                osLog("Captured UITextField: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Text: \(textField.text ?? "nil")")
-                osLog("  - Placeholder: \(textField.placeholder ?? "nil")")
-                osLog("  - Text Color: \(textField.textColor ?? .black)")
-                osLog("  - Font: \(textField.font ?? UIFont.systemFont(ofSize: 14))")
-                osLog("  - Alignment: \(textField.textAlignment.rawValue)")
-                osLog("  - Is Editing: \(textField.isEditing)")
-                osLog("  - Is Secure: \(textField.isSecureTextEntry)")
-                osLog("  - Keyboard Type: \(textField.keyboardType.rawValue)")
-                osLog("  - Hidden: \(textField.isHidden)")
-                osLog("  - Frame: \(textField.frame)")
+                var properties = "Captured UITextField: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Text: \(textField.text ?? "nil")\n"
+                properties += "  - Placeholder: \(textField.placeholder ?? "nil")\n"
+                properties += "  - Text Color: \(textField.textColor ?? .black)\n"
+                properties += "  - Font: \(textField.font ?? UIFont.systemFont(ofSize: 14))\n"
+                properties += "  - Alignment: \(textField.textAlignment.rawValue)\n"
+                properties += "  - Is Editing: \(textField.isEditing)\n"
+                properties += "  - Is Secure: \(textField.isSecureTextEntry)\n"
+                properties += "  - Keyboard Type: \(textField.keyboardType.rawValue)\n"
+                properties += "  - Hidden: \(textField.isHidden)\n"
+                properties += "  - Frame: \(textField.frame)"
+                osLog(properties)
 
             case let textView as UITextView:
                 let name = child.label ?? "No label found"
-                osLog("Captured UITextView: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Text: \(textView.text)")
-                osLog("  - Text Color: \(textView.textColor ?? .black)")
-                osLog("  - Font: \(textView.font ?? UIFont.systemFont(ofSize: 14))")
-                osLog("  - Editable: \(textView.isEditable)")
-                osLog("  - Selectable: \(textView.isSelectable)")
-                osLog("  - Alignment: \(textView.textAlignment.rawValue)")
-                osLog("  - Hidden: \(textView.isHidden)")
-                osLog("  - Frame: \(textView.frame)")
+                var properties = "Captured UITextView: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Text: \(textView.text)\n"
+                properties += "  - Text Color: \(textView.textColor ?? .black)\n"
+                properties += "  - Font: \(textView.font ?? UIFont.systemFont(ofSize: 14))\n"
+                properties += "  - Editable: \(textView.isEditable)\n"
+                properties += "  - Selectable: \(textView.isSelectable)\n"
+                properties += "  - Alignment: \(textView.textAlignment.rawValue)\n"
+                properties += "  - Hidden: \(textView.isHidden)\n"
+                properties += "  - Frame: \(textView.frame)"
+                osLog(properties)
 
             case let tableView as UITableView:
                 let name = child.label ?? "No label found"
-                osLog("Captured UITableView: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Number of Sections: \(tableView.numberOfSections)")
-                osLog("  - Style: \(tableView.style.rawValue)")
-                osLog("  - Separator Style: \(tableView.separatorStyle.rawValue)")
-                osLog("  - Row Height: \(tableView.rowHeight)")
-                osLog("  - Allows Selection: \(tableView.allowsSelection)")
-                osLog("  - Allows Multiple Selection: \(tableView.allowsMultipleSelection)")
-                osLog("  - Hidden: \(tableView.isHidden)")
-                osLog("  - Frame: \(tableView.frame)")
+                var properties = "Captured UITableView: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Number of Sections: \(tableView.numberOfSections)\n"
+                properties += "  - Style: \(tableView.style.rawValue)\n"
+                properties += "  - Separator Style: \(tableView.separatorStyle.rawValue)\n"
+                properties += "  - Row Height: \(tableView.rowHeight)\n"
+                properties += "  - Allows Selection: \(tableView.allowsSelection)\n"
+                properties += "  - Allows Multiple Selection: \(tableView.allowsMultipleSelection)\n"
+                properties += "  - Hidden: \(tableView.isHidden)\n"
+                properties += "  - Frame: \(tableView.frame)"
                 
                 let screenShot = tableView.captureTableViewScreenshots()
                 let combinedImage = screenShot.combineImagesVertically()
                 if let pngData = combinedImage.pngData() {
                     let path = try? saveToDocuments(data: pngData, fileName: "tableView_\(name)", fileExtension: "jpg")
-                    osLog("  - Screenshot Path: \(path?.absoluteString ?? "nil")")
+                    properties += "\n  - Screenshot Path: \(path?.absoluteString ?? "nil")"
                 }
+                osLog(properties)
 
             case let collectionView as UICollectionView:
                 let name = child.label ?? "No label found"
-                osLog("Captured UICollectionView: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Number of Sections: \(collectionView.numberOfSections)")
-                osLog("  - Allows Selection: \(collectionView.allowsSelection)")
-                osLog("  - Allows Multiple Selection: \(collectionView.allowsMultipleSelection)")
-                osLog("  - Hidden: \(collectionView.isHidden)")
-                osLog("  - Frame: \(collectionView.frame)")
+                var properties = "Captured UICollectionView: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Number of Sections: \(collectionView.numberOfSections)\n"
+                properties += "  - Allows Selection: \(collectionView.allowsSelection)\n"
+                properties += "  - Allows Multiple Selection: \(collectionView.allowsMultipleSelection)\n"
+                properties += "  - Hidden: \(collectionView.isHidden)\n"
+                properties += "  - Frame: \(collectionView.frame)"
+                
                 if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-                    osLog("  - Item Size: \(layout.itemSize)")
-                    osLog("  - Scroll Direction: \(layout.scrollDirection == .vertical ? "Vertical" : "Horizontal")")
+                    properties += "\n  - Item Size: \(layout.itemSize)\n"
+                    properties += "  - Scroll Direction: \(layout.scrollDirection == .vertical ? "Vertical" : "Horizontal")"
                 }
+                osLog(properties)
 
             case let stackView as UIStackView:
                 let name = child.label ?? "No label found"
-                osLog("Captured UIStackView: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Axis: \(stackView.axis == .horizontal ? "Horizontal" : "Vertical")")
-                osLog("  - Alignment: \(stackView.alignment.rawValue)")
-                osLog("  - Distribution: \(stackView.distribution.rawValue)")
-                osLog("  - Spacing: \(stackView.spacing)")
-                osLog("  - Arranged Subviews Count: \(stackView.arrangedSubviews.count)")
-                osLog("  - Hidden: \(stackView.isHidden)")
-                osLog("  - Frame: \(stackView.frame)")
+                var properties = "Captured UIStackView: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Axis: \(stackView.axis == .horizontal ? "Horizontal" : "Vertical")\n"
+                properties += "  - Alignment: \(stackView.alignment.rawValue)\n"
+                properties += "  - Distribution: \(stackView.distribution.rawValue)\n"
+                properties += "  - Spacing: \(stackView.spacing)\n"
+                properties += "  - Arranged Subviews Count: \(stackView.arrangedSubviews.count)\n"
+                properties += "  - Hidden: \(stackView.isHidden)\n"
+                properties += "  - Frame: \(stackView.frame)"
+                osLog(properties)
 
             case let switchControl as UISwitch:
                 let name = child.label ?? "No label found"
-                osLog("Captured UISwitch: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Is On: \(switchControl.isOn)")
-                osLog("  - Enabled: \(switchControl.isEnabled)")
-                osLog("  - On Tint Color: \(switchControl.onTintColor ?? .systemBlue)")
-                osLog("  - Thumb Tint Color: \(switchControl.thumbTintColor ?? .white)")
-                osLog("  - Hidden: \(switchControl.isHidden)")
-                osLog("  - Frame: \(switchControl.frame)")
+                var properties = "Captured UISwitch: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Is On: \(switchControl.isOn)\n"
+                properties += "  - Enabled: \(switchControl.isEnabled)\n"
+                properties += "  - On Tint Color: \(switchControl.onTintColor ?? .systemBlue)\n"
+                properties += "  - Thumb Tint Color: \(switchControl.thumbTintColor ?? .white)\n"
+                properties += "  - Hidden: \(switchControl.isHidden)\n"
+                properties += "  - Frame: \(switchControl.frame)"
+                osLog(properties)
 
             case let scrollView as UIScrollView:
                 let name = child.label ?? "No label found"
-                osLog("Captured UIScrollView: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Content Size: \(scrollView.contentSize)")
-                osLog("  - Content Offset: \(scrollView.contentOffset)")
-                osLog("  - Content Inset: \(scrollView.contentInset)")
-                osLog("  - Bounces: \(scrollView.bounces)")
-                osLog("  - Paging Enabled: \(scrollView.isPagingEnabled)")
-                osLog("  - Shows Indicators: H:\(scrollView.showsHorizontalScrollIndicator) V:\(scrollView.showsVerticalScrollIndicator)")
-                osLog("  - Hidden: \(scrollView.isHidden)")
-                osLog("  - Frame: \(scrollView.frame)")
+                var properties = "Captured UIScrollView: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Content Size: \(scrollView.contentSize)\n"
+                properties += "  - Content Offset: \(scrollView.contentOffset)\n"
+                properties += "  - Content Inset: \(scrollView.contentInset)\n"
+                properties += "  - Bounces: \(scrollView.bounces)\n"
+                properties += "  - Paging Enabled: \(scrollView.isPagingEnabled)\n"
+                properties += "  - Shows Indicators: H:\(scrollView.showsHorizontalScrollIndicator) V:\(scrollView.showsVerticalScrollIndicator)\n"
+                properties += "  - Hidden: \(scrollView.isHidden)\n"
+                properties += "  - Frame: \(scrollView.frame)"
+                osLog(properties)
 
             case let view as UIView:
                 let name = child.label ?? "No label found"
-                osLog("Captured UIView: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Background Color: \(view.backgroundColor ?? .clear)")
-                osLog("  - Alpha: \(view.alpha)")
-                osLog("  - Is User Interaction Enabled: \(view.isUserInteractionEnabled)")
-                osLog("  - Tag: \(view.tag)")
-                osLog("  - Hidden: \(view.isHidden)")
-                osLog("  - Frame: \(view.frame)")
-                osLog("  - Subviews Count: \(view.subviews.count)")
-                osLog("  - Layer Properties: Corner Radius: \(view.layer.cornerRadius), Border Width: \(view.layer.borderWidth)")
+                var properties = "Captured UIView: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Background Color: \(view.backgroundColor ?? .clear)\n"
+                properties += "  - Alpha: \(view.alpha)\n"
+                properties += "  - Is User Interaction Enabled: \(view.isUserInteractionEnabled)\n"
+                properties += "  - Tag: \(view.tag)\n"
+                properties += "  - Hidden: \(view.isHidden)\n"
+                properties += "  - Frame: \(view.frame)\n"
+                properties += "  - Subviews Count: \(view.subviews.count)\n"
+                properties += "  - Layer Properties: Corner Radius: \(view.layer.cornerRadius), Border Width: \(view.layer.borderWidth)"
+                osLog(properties)
 
             case let viewController as UIViewController:
                 let name = child.label ?? "No label found"
-                osLog("Captured UIViewController: \(name)")
-                osLog("-- Properties --")
-                osLog("  - Title: \(viewController.title ?? "nil")")
-                osLog("  - View Loaded: \(viewController.isViewLoaded)")
-                osLog("  - Presentation Style: \(viewController.modalPresentationStyle.rawValue)")
-                osLog("  - Transition Style: \(viewController.modalTransitionStyle.rawValue)")
-                osLog("  - Child VCs Count: \(viewController.children.count)")
-                osLog("  - Parent VC: \(String(describing: type(of: viewController.parent ?? NSObject())))")
+                var properties = "Captured UIViewController: \(name)\n"
+                properties += "-- Properties --\n"
+                properties += "  - Title: \(viewController.title ?? "nil")\n"
+                properties += "  - View Loaded: \(viewController.isViewLoaded)\n"
+                properties += "  - Presentation Style: \(viewController.modalPresentationStyle.rawValue)\n"
+                properties += "  - Transition Style: \(viewController.modalTransitionStyle.rawValue)\n"
+                properties += "  - Child VCs Count: \(viewController.children.count)\n"
+                properties += "  - Parent VC: \(String(describing: type(of: viewController.parent ?? NSObject())))"
+                
                 if viewController.isViewLoaded {
-                    osLog("  - View Frame: \(viewController.view.frame)")
-                    osLog("  - View Hidden: \(viewController.view.isHidden)")
+                    properties += "\n  - View Frame: \(viewController.view.frame)\n"
+                    properties += "  - View Hidden: \(viewController.view.isHidden)"
                 }
+                osLog(properties)
 
             default:
+                var properties = ""
                 if let label = child.label {
-                    osLog("Unhandled type for '\(label)': \(type(of: child.value))")
+                    properties = "Unhandled type for '\(label)': \(type(of: child.value))"
                 } else {
-                    osLog("Unhandled type (no label): \(type(of: child.value))")
+                    properties = "Unhandled type (no label): \(type(of: child.value))"
                 }
+                osLog(properties)
             }
         }
     }
