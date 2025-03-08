@@ -15,13 +15,7 @@ public func osLog(_ message: String,
                   line: Int = #line) {
     if #available(iOS 14.0, *) {
         let logger: Logger = Logger(subsystem: subsystem, category: category)
-        let formattedMessage: String = """
-File: \(file)
-Line: \(line)
-Message:
-\(message)
-"""
-        logger.info("\(formattedMessage)")
+        logger.info("\(message)")
     } else {
         // Print the logs to console and print the logs to file
         // Add stack trace also if needed.

@@ -127,7 +127,7 @@ public extension UIViewController {
         properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(label.frame)"))
         
         let elementInfo = BMElementInformation(
-            image: nil,
+            image: label.takeScreenshot(),
             elementName: elementName,
             elementType: "UILabel",
             properties: properties
@@ -180,7 +180,7 @@ public extension UIViewController {
         properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(textField.frame)"))
         
         let elementInfo = BMElementInformation(
-            image: nil,
+            image: textField.takeScreenshot(),
             elementName: elementName,
             elementType: "UITextField",
             properties: properties
@@ -203,7 +203,7 @@ public extension UIViewController {
         properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(textView.frame)"))
         
         let elementInfo = BMElementInformation(
-            image: nil,
+            image: textView.takeScreenshot(),
             elementName: elementName,
             elementType: "UITextView",
             properties: properties
@@ -281,7 +281,7 @@ public extension UIViewController {
         properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(stackView.frame)"))
         
         let elementInfo = BMElementInformation(
-            image: nil,
+            image: stackView.takeScreenshot(),
             elementName: elementName,
             elementType: "UIStackView",
             properties: properties
@@ -302,7 +302,7 @@ public extension UIViewController {
         properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(switchControl.frame)"))
         
         let elementInfo = BMElementInformation(
-            image: nil,
+            image: switchControl.takeScreenshot(),
             elementName: elementName,
             elementType: "UISwitch",
             properties: properties
@@ -323,9 +323,9 @@ public extension UIViewController {
         properties.append(BMElementProperties(propertyName: "Shows Indicators", propertyValue: "H:\(scrollView.showsHorizontalScrollIndicator) V:\(scrollView.showsVerticalScrollIndicator)"))
         properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(scrollView.isHidden)"))
         properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(scrollView.frame)"))
-        
+        // TODO: Create scrolled complete image
         let elementInfo = BMElementInformation(
-            image: nil,
+            image: scrollView.takeScreenshot(),
             elementName: elementName,
             elementType: "UIScrollView",
             properties: properties
@@ -348,7 +348,7 @@ public extension UIViewController {
         properties.append(BMElementProperties(propertyName: "Layer Properties", propertyValue: "Corner Radius: \(view.layer.cornerRadius), Border Width: \(view.layer.borderWidth)"))
         
         let elementInfo = BMElementInformation(
-            image: nil,
+            image: view.takeScreenshot(),
             elementName: elementName,
             elementType: "UIView",
             properties: properties
