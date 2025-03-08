@@ -8,6 +8,30 @@
 import UIKit
 import OSLog
 
+struct BMElementProperties {
+    let propertyName: String
+    let propertyValue: String
+}
+
+struct BMElementInformation {
+    let image: UIImage?
+    let elementName: String
+    let elementType: String
+    let properties: [BMElementProperties]
+    
+    // Helper method to format the properties for logging
+    func formattedDescription() -> String {
+        var result = "Captured \(elementType): \(elementName)\n"
+        result += "-- Properties --\n"
+        
+        for property in properties {
+            result += "  - \(property.propertyName): \(property.propertyValue)\n"
+        }
+        
+        return result.trimmingCharacters(in: .newlines)
+    }
+}
+
 public extension UIViewController {
     var controllerName: String { String(describing: type(of: self)) }
     
@@ -61,207 +85,316 @@ public extension UIViewController {
     // MARK: - UI Element Capture Methods
     
     private func captureButton(_ button: UIButton, label: String?) {
-        let name = label ?? "No label found"
-        var properties = "Captured UIButton: \(name)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Title: \(button.title(for: .normal) ?? "nil")\n"
-        properties += "  - State: \(button.state.rawValue)\n"
-        properties += "  - Enabled: \(button.isEnabled)\n"
-        properties += "  - Hidden: \(button.isHidden)\n"
-        properties += "  - Frame: \(button.frame)\n"
-        properties += "  - Tag: \(button.tag)"
+        let elementName = label ?? "No label found"
+        var properties = [BMElementProperties]()
         
-        if let imageData = button.currentImage?.pngData() {
-            let path = try? saveToDocuments(data: imageData, fileName: "button_\(name)_image", fileExtension: "png")
-            properties += "\n  - Image Path: \(path?.absoluteString ?? "nil")"
+        properties.append(BMElementProperties(propertyName: "Title", propertyValue: button.title(for: .normal) ?? "nil"))
+        properties.append(BMElementProperties(propertyName: "State", propertyValue: "\(button.state.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Enabled", propertyValue: "\(button.isEnabled)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(button.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(button.frame)"))
+        properties.append(BMElementProperties(propertyName: "Tag", propertyValue: "\(button.tag)"))
+        
+        var image: UIImage? = nil
+        if let buttonImage = button.currentImage {
+            image = buttonImage
+            if let imageData = buttonImage.pngData() {
+                let path = try? saveToDocuments(data: imageData, fileName: "button_\(elementName)_image", fileExtension: "png")
+                properties.append(BMElementProperties(propertyName: "Image Path", propertyValue: path?.absoluteString ?? "nil"))
+            }
         }
-        osLog(properties)
+        
+        let elementInfo = BMElementInformation(
+            image: image,
+            elementName: elementName,
+            elementType: "UIButton",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureLabel(_ label: UILabel, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UILabel: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Text: \(label.text ?? "nil")\n"
-        properties += "  - Text Color: \(label.textColor)\n"
-        properties += "  - Font: \(label.font)\n"
-        properties += "  - Lines: \(label.numberOfLines)\n"
-        properties += "  - Alignment: \(label.textAlignment.rawValue)\n"
-        properties += "  - Hidden: \(label.isHidden)\n"
-        properties += "  - Frame: \(label.frame)"
-        osLog(properties)
+        var properties = [BMElementProperties]()
+        
+        properties.append(BMElementProperties(propertyName: "Text", propertyValue: label.text ?? "nil"))
+        properties.append(BMElementProperties(propertyName: "Text Color", propertyValue: "\(label.textColor)"))
+        properties.append(BMElementProperties(propertyName: "Font", propertyValue: "\(label.font)"))
+        properties.append(BMElementProperties(propertyName: "Lines", propertyValue: "\(label.numberOfLines)"))
+        properties.append(BMElementProperties(propertyName: "Alignment", propertyValue: "\(label.textAlignment.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(label.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(label.frame)"))
+        
+        let elementInfo = BMElementInformation(
+            image: nil,
+            elementName: elementName,
+            elementType: "UILabel",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureImageView(_ imageView: UIImageView, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UIImageView: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Content Mode: \(imageView.contentMode.rawValue)\n"
-        properties += "  - Has Image: \(imageView.image != nil)\n"
-        properties += "  - Hidden: \(imageView.isHidden)\n"
-        properties += "  - Frame: \(imageView.frame)"
+        var properties = [BMElementProperties]()
         
-        if let imageData = imageView.image?.pngData() {
-            let path = try? saveToDocuments(data: imageData, fileName: "imageView_\(elementName)_image", fileExtension: "png")
-            properties += "\n  - Image Path: \(path?.absoluteString ?? "nil")"
+        properties.append(BMElementProperties(propertyName: "Content Mode", propertyValue: "\(imageView.contentMode.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Has Image", propertyValue: "\(imageView.image != nil)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(imageView.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(imageView.frame)"))
+        
+        var image: UIImage? = nil
+        if let viewImage = imageView.image {
+            image = viewImage
+            if let imageData = viewImage.pngData() {
+                let path = try? saveToDocuments(data: imageData, fileName: "imageView_\(elementName)_image", fileExtension: "png")
+                properties.append(BMElementProperties(propertyName: "Image Path", propertyValue: path?.absoluteString ?? "nil"))
+            }
         }
-        osLog(properties)
+        
+        let elementInfo = BMElementInformation(
+            image: image,
+            elementName: elementName,
+            elementType: "UIImageView",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureTextField(_ textField: UITextField, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UITextField: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Text: \(textField.text ?? "nil")\n"
-        properties += "  - Placeholder: \(textField.placeholder ?? "nil")\n"
-        properties += "  - Text Color: \(textField.textColor ?? .black)\n"
-        properties += "  - Font: \(textField.font ?? UIFont.systemFont(ofSize: 14))\n"
-        properties += "  - Alignment: \(textField.textAlignment.rawValue)\n"
-        properties += "  - Is Editing: \(textField.isEditing)\n"
-        properties += "  - Is Secure: \(textField.isSecureTextEntry)\n"
-        properties += "  - Keyboard Type: \(textField.keyboardType.rawValue)\n"
-        properties += "  - Hidden: \(textField.isHidden)\n"
-        properties += "  - Frame: \(textField.frame)"
-        osLog(properties)
+        var properties = [BMElementProperties]()
+        
+        properties.append(BMElementProperties(propertyName: "Text", propertyValue: textField.text ?? "nil"))
+        properties.append(BMElementProperties(propertyName: "Placeholder", propertyValue: textField.placeholder ?? "nil"))
+        properties.append(BMElementProperties(propertyName: "Text Color", propertyValue: "\(textField.textColor ?? .black)"))
+        properties.append(BMElementProperties(propertyName: "Font", propertyValue: "\(textField.font ?? UIFont.systemFont(ofSize: 14))"))
+        properties.append(BMElementProperties(propertyName: "Alignment", propertyValue: "\(textField.textAlignment.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Is Editing", propertyValue: "\(textField.isEditing)"))
+        properties.append(BMElementProperties(propertyName: "Is Secure", propertyValue: "\(textField.isSecureTextEntry)"))
+        properties.append(BMElementProperties(propertyName: "Keyboard Type", propertyValue: "\(textField.keyboardType.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(textField.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(textField.frame)"))
+        
+        let elementInfo = BMElementInformation(
+            image: nil,
+            elementName: elementName,
+            elementType: "UITextField",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureTextView(_ textView: UITextView, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UITextView: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Text: \(textView.text)\n"
-        properties += "  - Text Color: \(textView.textColor ?? .black)\n"
-        properties += "  - Font: \(textView.font ?? UIFont.systemFont(ofSize: 14))\n"
-        properties += "  - Editable: \(textView.isEditable)\n"
-        properties += "  - Selectable: \(textView.isSelectable)\n"
-        properties += "  - Alignment: \(textView.textAlignment.rawValue)\n"
-        properties += "  - Hidden: \(textView.isHidden)\n"
-        properties += "  - Frame: \(textView.frame)"
-        osLog(properties)
+        var properties = [BMElementProperties]()
+        
+        properties.append(BMElementProperties(propertyName: "Text", propertyValue: textView.text))
+        properties.append(BMElementProperties(propertyName: "Text Color", propertyValue: "\(textView.textColor ?? .black)"))
+        properties.append(BMElementProperties(propertyName: "Font", propertyValue: "\(textView.font ?? UIFont.systemFont(ofSize: 14))"))
+        properties.append(BMElementProperties(propertyName: "Editable", propertyValue: "\(textView.isEditable)"))
+        properties.append(BMElementProperties(propertyName: "Selectable", propertyValue: "\(textView.isSelectable)"))
+        properties.append(BMElementProperties(propertyName: "Alignment", propertyValue: "\(textView.textAlignment.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(textView.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(textView.frame)"))
+        
+        let elementInfo = BMElementInformation(
+            image: nil,
+            elementName: elementName,
+            elementType: "UITextView",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureTableView(_ tableView: UITableView, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UITableView: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Number of Sections: \(tableView.numberOfSections)\n"
-        properties += "  - Style: \(tableView.style.rawValue)\n"
-        properties += "  - Separator Style: \(tableView.separatorStyle.rawValue)\n"
-        properties += "  - Row Height: \(tableView.rowHeight)\n"
-        properties += "  - Allows Selection: \(tableView.allowsSelection)\n"
-        properties += "  - Allows Multiple Selection: \(tableView.allowsMultipleSelection)\n"
-        properties += "  - Hidden: \(tableView.isHidden)\n"
-        properties += "  - Frame: \(tableView.frame)"
+        var properties = [BMElementProperties]()
+        
+        properties.append(BMElementProperties(propertyName: "Number of Sections", propertyValue: "\(tableView.numberOfSections)"))
+        properties.append(BMElementProperties(propertyName: "Style", propertyValue: "\(tableView.style.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Separator Style", propertyValue: "\(tableView.separatorStyle.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Row Height", propertyValue: "\(tableView.rowHeight)"))
+        properties.append(BMElementProperties(propertyName: "Allows Selection", propertyValue: "\(tableView.allowsSelection)"))
+        properties.append(BMElementProperties(propertyName: "Allows Multiple Selection", propertyValue: "\(tableView.allowsMultipleSelection)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(tableView.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(tableView.frame)"))
         
         let screenShot = tableView.captureTableViewScreenshots()
         let combinedImage = screenShot.combineImagesVertically()
+        
         if let pngData = combinedImage.pngData() {
             let path = try? saveToDocuments(data: pngData, fileName: "tableView_\(elementName)", fileExtension: "jpg")
-            properties += "\n  - Screenshot Path: \(path?.absoluteString ?? "nil")"
+            properties.append(BMElementProperties(propertyName: "Screenshot Path", propertyValue: path?.absoluteString ?? "nil"))
         }
-        osLog(properties)
+        
+        let elementInfo = BMElementInformation(
+            image: combinedImage,
+            elementName: elementName,
+            elementType: "UITableView",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureCollectionView(_ collectionView: UICollectionView, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UICollectionView: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Number of Sections: \(collectionView.numberOfSections)\n"
-        properties += "  - Allows Selection: \(collectionView.allowsSelection)\n"
-        properties += "  - Allows Multiple Selection: \(collectionView.allowsMultipleSelection)\n"
-        properties += "  - Hidden: \(collectionView.isHidden)\n"
-        properties += "  - Frame: \(collectionView.frame)"
+        var properties = [BMElementProperties]()
+        
+        properties.append(BMElementProperties(propertyName: "Number of Sections", propertyValue: "\(collectionView.numberOfSections)"))
+        properties.append(BMElementProperties(propertyName: "Allows Selection", propertyValue: "\(collectionView.allowsSelection)"))
+        properties.append(BMElementProperties(propertyName: "Allows Multiple Selection", propertyValue: "\(collectionView.allowsMultipleSelection)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(collectionView.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(collectionView.frame)"))
         
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            properties += "\n  - Item Size: \(layout.itemSize)\n"
-            properties += "  - Scroll Direction: \(layout.scrollDirection == .vertical ? "Vertical" : "Horizontal")"
+            properties.append(BMElementProperties(propertyName: "Item Size", propertyValue: "\(layout.itemSize)"))
+            properties.append(BMElementProperties(propertyName: "Scroll Direction", propertyValue: layout.scrollDirection == .vertical ? "Vertical" : "Horizontal"))
         }
-        osLog(properties)
+        
+        let elementInfo = BMElementInformation(
+            image: nil,
+            elementName: elementName,
+            elementType: "UICollectionView",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureStackView(_ stackView: UIStackView, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UIStackView: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Axis: \(stackView.axis == .horizontal ? "Horizontal" : "Vertical")\n"
-        properties += "  - Alignment: \(stackView.alignment.rawValue)\n"
-        properties += "  - Distribution: \(stackView.distribution.rawValue)\n"
-        properties += "  - Spacing: \(stackView.spacing)\n"
-        properties += "  - Arranged Subviews Count: \(stackView.arrangedSubviews.count)\n"
-        properties += "  - Hidden: \(stackView.isHidden)\n"
-        properties += "  - Frame: \(stackView.frame)"
-        osLog(properties)
+        var properties = [BMElementProperties]()
+        
+        properties.append(BMElementProperties(propertyName: "Axis", propertyValue: stackView.axis == .horizontal ? "Horizontal" : "Vertical"))
+        properties.append(BMElementProperties(propertyName: "Alignment", propertyValue: "\(stackView.alignment.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Distribution", propertyValue: "\(stackView.distribution.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Spacing", propertyValue: "\(stackView.spacing)"))
+        properties.append(BMElementProperties(propertyName: "Arranged Subviews Count", propertyValue: "\(stackView.arrangedSubviews.count)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(stackView.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(stackView.frame)"))
+        
+        let elementInfo = BMElementInformation(
+            image: nil,
+            elementName: elementName,
+            elementType: "UIStackView",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureSwitch(_ switchControl: UISwitch, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UISwitch: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Is On: \(switchControl.isOn)\n"
-        properties += "  - Enabled: \(switchControl.isEnabled)\n"
-        properties += "  - On Tint Color: \(switchControl.onTintColor ?? .systemBlue)\n"
-        properties += "  - Thumb Tint Color: \(switchControl.thumbTintColor ?? .white)\n"
-        properties += "  - Hidden: \(switchControl.isHidden)\n"
-        properties += "  - Frame: \(switchControl.frame)"
-        osLog(properties)
+        var properties = [BMElementProperties]()
+        
+        properties.append(BMElementProperties(propertyName: "Is On", propertyValue: "\(switchControl.isOn)"))
+        properties.append(BMElementProperties(propertyName: "Enabled", propertyValue: "\(switchControl.isEnabled)"))
+        properties.append(BMElementProperties(propertyName: "On Tint Color", propertyValue: "\(switchControl.onTintColor ?? .systemBlue)"))
+        properties.append(BMElementProperties(propertyName: "Thumb Tint Color", propertyValue: "\(switchControl.thumbTintColor ?? .white)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(switchControl.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(switchControl.frame)"))
+        
+        let elementInfo = BMElementInformation(
+            image: nil,
+            elementName: elementName,
+            elementType: "UISwitch",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureScrollView(_ scrollView: UIScrollView, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UIScrollView: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Content Size: \(scrollView.contentSize)\n"
-        properties += "  - Content Offset: \(scrollView.contentOffset)\n"
-        properties += "  - Content Inset: \(scrollView.contentInset)\n"
-        properties += "  - Bounces: \(scrollView.bounces)\n"
-        properties += "  - Paging Enabled: \(scrollView.isPagingEnabled)\n"
-        properties += "  - Shows Indicators: H:\(scrollView.showsHorizontalScrollIndicator) V:\(scrollView.showsVerticalScrollIndicator)\n"
-        properties += "  - Hidden: \(scrollView.isHidden)\n"
-        properties += "  - Frame: \(scrollView.frame)"
-        osLog(properties)
+        var properties = [BMElementProperties]()
+        
+        properties.append(BMElementProperties(propertyName: "Content Size", propertyValue: "\(scrollView.contentSize)"))
+        properties.append(BMElementProperties(propertyName: "Content Offset", propertyValue: "\(scrollView.contentOffset)"))
+        properties.append(BMElementProperties(propertyName: "Content Inset", propertyValue: "\(scrollView.contentInset)"))
+        properties.append(BMElementProperties(propertyName: "Bounces", propertyValue: "\(scrollView.bounces)"))
+        properties.append(BMElementProperties(propertyName: "Paging Enabled", propertyValue: "\(scrollView.isPagingEnabled)"))
+        properties.append(BMElementProperties(propertyName: "Shows Indicators", propertyValue: "H:\(scrollView.showsHorizontalScrollIndicator) V:\(scrollView.showsVerticalScrollIndicator)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(scrollView.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(scrollView.frame)"))
+        
+        let elementInfo = BMElementInformation(
+            image: nil,
+            elementName: elementName,
+            elementType: "UIScrollView",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureView(_ view: UIView, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UIView: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Background Color: \(view.backgroundColor ?? .clear)\n"
-        properties += "  - Alpha: \(view.alpha)\n"
-        properties += "  - Is User Interaction Enabled: \(view.isUserInteractionEnabled)\n"
-        properties += "  - Tag: \(view.tag)\n"
-        properties += "  - Hidden: \(view.isHidden)\n"
-        properties += "  - Frame: \(view.frame)\n"
-        properties += "  - Subviews Count: \(view.subviews.count)\n"
-        properties += "  - Layer Properties: Corner Radius: \(view.layer.cornerRadius), Border Width: \(view.layer.borderWidth)"
-        osLog(properties)
+        var properties = [BMElementProperties]()
+        
+        properties.append(BMElementProperties(propertyName: "Background Color", propertyValue: "\(view.backgroundColor ?? .clear)"))
+        properties.append(BMElementProperties(propertyName: "Alpha", propertyValue: "\(view.alpha)"))
+        properties.append(BMElementProperties(propertyName: "Is User Interaction Enabled", propertyValue: "\(view.isUserInteractionEnabled)"))
+        properties.append(BMElementProperties(propertyName: "Tag", propertyValue: "\(view.tag)"))
+        properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(view.isHidden)"))
+        properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(view.frame)"))
+        properties.append(BMElementProperties(propertyName: "Subviews Count", propertyValue: "\(view.subviews.count)"))
+        properties.append(BMElementProperties(propertyName: "Layer Properties", propertyValue: "Corner Radius: \(view.layer.cornerRadius), Border Width: \(view.layer.borderWidth)"))
+        
+        let elementInfo = BMElementInformation(
+            image: nil,
+            elementName: elementName,
+            elementType: "UIView",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureViewController(_ viewController: UIViewController, name: String?) {
         let elementName = name ?? "No label found"
-        var properties = "Captured UIViewController: \(elementName)\n"
-        properties += "-- Properties --\n"
-        properties += "  - Title: \(viewController.title ?? "nil")\n"
-        properties += "  - View Loaded: \(viewController.isViewLoaded)\n"
-        properties += "  - Presentation Style: \(viewController.modalPresentationStyle.rawValue)\n"
-        properties += "  - Transition Style: \(viewController.modalTransitionStyle.rawValue)\n"
-        properties += "  - Child VCs Count: \(viewController.children.count)\n"
-        properties += "  - Parent VC: \(String(describing: type(of: viewController.parent ?? NSObject())))"
+        var properties = [BMElementProperties]()
+        
+        properties.append(BMElementProperties(propertyName: "Title", propertyValue: viewController.title ?? "nil"))
+        properties.append(BMElementProperties(propertyName: "View Loaded", propertyValue: "\(viewController.isViewLoaded)"))
+        properties.append(BMElementProperties(propertyName: "Presentation Style", propertyValue: "\(viewController.modalPresentationStyle.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Transition Style", propertyValue: "\(viewController.modalTransitionStyle.rawValue)"))
+        properties.append(BMElementProperties(propertyName: "Child VCs Count", propertyValue: "\(viewController.children.count)"))
+        properties.append(BMElementProperties(propertyName: "Parent VC", propertyValue: String(describing: type(of: viewController.parent ?? NSObject()))))
         
         if viewController.isViewLoaded {
-            properties += "\n  - View Frame: \(viewController.view.frame)\n"
-            properties += "  - View Hidden: \(viewController.view.isHidden)"
+            properties.append(BMElementProperties(propertyName: "View Frame", propertyValue: "\(viewController.view.frame)"))
+            properties.append(BMElementProperties(propertyName: "View Hidden", propertyValue: "\(viewController.view.isHidden)"))
         }
-        osLog(properties)
+        
+        let elementInfo = BMElementInformation(
+            image: nil,
+            elementName: elementName,
+            elementType: "UIViewController",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
     
     private func captureUnhandledType(_ value: Any, label: String?) {
-        var properties = ""
-        if let label = label {
-            properties = "Unhandled type for '\(label)': \(type(of: value))"
-        } else {
-            properties = "Unhandled type (no label): \(type(of: value))"
-        }
-        osLog(properties)
+        let elementName = label ?? "No label found"
+        let properties = [BMElementProperties(propertyName: "Type", propertyValue: "\(type(of: value))")]
+        
+        let elementInfo = BMElementInformation(
+            image: nil,
+            elementName: elementName,
+            elementType: "Unhandled Type",
+            properties: properties
+        )
+        
+        osLog(elementInfo.formattedDescription())
     }
 }
 
