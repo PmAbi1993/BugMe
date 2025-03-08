@@ -7,6 +7,10 @@
 
 import Foundation
 
+public protocol NetworkCaptureDelegate: AnyObject {
+    func networkCaptured(call: NetworkCallModel)
+}
+
 public class NetworkCapture {
     
     // Singleton instance
@@ -14,6 +18,15 @@ public class NetworkCapture {
     
     // Flag to check if swizzling is enabled
     private var isEnabled = false
+    
+    // Collection of captured network calls
+    @MainActor public private(set) var capturedCalls: [NetworkCallModel] = []
+    
+    // Maximum number of calls to store (0 means unlimited)
+    @MainActor public var maxStoredCalls: Int = 100
+    
+    // Delegate for real-time notifications
+    @MainActor public weak var delegate: NetworkCaptureDelegate?
     
     private init() {}
     
@@ -73,44 +86,41 @@ public class NetworkCapture {
         }
     }
     
+    // Clear all stored calls
+    @MainActor public func clearCapturedCalls() {
+        capturedCalls.removeAll()
+    }
+    
     // Log request and response details
     static func logNetworkCall(request: URLRequest?, response: URLResponse?, data: Data?, error: Error?, taskType: String) {
-        print("\n===== BugMe: Network Call Captured =====")
-        print("Task Type: \(taskType)")
+        let model = NetworkCallModel(
+            taskType: taskType,
+            url: request?.url,
+            method: request?.httpMethod,
+            requestHeaders: request?.allHTTPHeaderFields as? [String: Any],
+            requestBody: request?.httpBody,
+            statusCode: (response as? HTTPURLResponse)?.statusCode,
+            responseHeaders: (response as? HTTPURLResponse)?.allHeaderFields as? [String: Any],
+            responseBody: data,
+            error: error
+        )
         
-        // Log Request
-        if let request = request {
-            print("\n--- Request ---")
-            print("URL: \(request.url?.absoluteString ?? "N/A")")
-            print("Method: \(request.httpMethod ?? "N/A")")
-            print("Headers: \(request.allHTTPHeaderFields?.description ?? "N/A")")
-            if let bodyData = request.httpBody, let bodyString = String(data: bodyData, encoding: .utf8) {
-                print("Body: \(bodyString)")
+        // Print to console for logging purposes
+        osLog(model.logDescription())
+        
+        // Store the model and notify delegate
+        Task { @MainActor in
+            let shared = NetworkCapture.shared
+            shared.capturedCalls.append(model)
+            
+            // Enforce maximum stored calls limit if needed
+            if shared.maxStoredCalls > 0 && shared.capturedCalls.count > shared.maxStoredCalls {
+                shared.capturedCalls = Array(shared.capturedCalls.suffix(shared.maxStoredCalls))
             }
+            
+            // Notify delegate if available
+            shared.delegate?.networkCaptured(call: model)
         }
-        
-        // Log Response
-        print("\n--- Response ---")
-        if let httpResponse = response as? HTTPURLResponse {
-            print("Status Code: \(httpResponse.statusCode)")
-            print("Headers: \(httpResponse.allHeaderFields.description)")
-        } else {
-            print("Status Code: N/A")
-        }
-        
-        // Log Response Data
-        if let data = data, let dataString = String(data: data, encoding: .utf8) {
-            print("\nResponse Body: \(dataString)")
-        } else {
-            print("\nResponse Body: N/A")
-        }
-        
-        // Log Error
-        if let error = error {
-            print("\nError: \(error.localizedDescription)")
-        }
-        
-        print("========================================\n")
     }
 }
 
