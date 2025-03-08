@@ -259,7 +259,7 @@ public extension UIViewController {
         }
         
         let elementInfo = BMElementInformation(
-            image: nil,
+            image: collectionView.screenshotEntireContent(),
             elementName: elementName,
             elementType: "UICollectionView",
             properties: properties
@@ -325,7 +325,7 @@ public extension UIViewController {
         properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(scrollView.frame)"))
         // TODO: Create scrolled complete image
         let elementInfo = BMElementInformation(
-            image: scrollView.takeScreenshot(),
+            image: scrollView.captureEntireScrollView(),
             elementName: elementName,
             elementType: "UIScrollView",
             properties: properties
