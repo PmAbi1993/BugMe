@@ -12,36 +12,51 @@ public extension UIViewController {
     
     func capture() {
         let controllerName: String = String(describing: type(of: self))
-        print("Controller: \(controllerName)")
+        osLog("Controller: \(controllerName)")
         for child in Mirror(reflecting: self).children {
             switch child.value {
             case let button as UIButton:
-                print("Captured UIButton: \(String(describing: type(of: button)))")
+                let label: String = child.label ?? "No label found"
+                osLog("Captured UIButton: \(label)))")
             case let label as UILabel:
-                print("Captured UILabel: \(String(describing: type(of: label)))")
+                osLog("Captured UILabel: \(String(describing: type(of: label)))")
             case let imageView as UIImageView:
-                print("Captured UIImageView: \(String(describing: type(of: imageView)))")
+                osLog("Captured UIImageView: \(String(describing: type(of: imageView)))")
             case let textField as UITextField:
-                print("Captured UITextField: \(String(describing: type(of: textField)))")
+                osLog("Captured UITextField: \(String(describing: type(of: textField)))")
             case let textView as UITextView:
-                print("Captured UITextView: \(String(describing: type(of: textView)))")
-            case let scrollView as UIScrollView:
-                print("Captured UIScrollView: \(String(describing: type(of: scrollView)))")
+                osLog("Captured UITextView: \(String(describing: type(of: textView)))")
             case let tableView as UITableView:
-                print("Captured UITableView: \(String(describing: type(of: tableView)))")
+                let screenShot = tableView.captureTableViewScreenshots()
+                let combinedImage = screenShot.combineImagesVertically()
+                if let pngData = combinedImage.pngData() {
+                    let path = try? saveToDocuments(data: pngData, fileName: "tableView", fileExtension: "jpg")
+                    osLog(path?.absoluteString ?? "", subsystem: "print")
+                }
+                osLog("Captured UITableView: \(String(describing: type(of: tableView)))")
             case let collectionView as UICollectionView:
-                print("Captured UICollectionView: \(String(describing: type(of: collectionView)))")
+                osLog("Captured UICollectionView: \(String(describing: type(of: collectionView)))")
             case let stackView as UIStackView:
-                print("Captured UIStackView: \(String(describing: type(of: stackView)))")
+                osLog("Captured UIStackView: \(String(describing: type(of: stackView)))")
             case let switchControl as UISwitch:
-                print("Captured UISwitch: \(String(describing: type(of: switchControl)))")
+                osLog("Captured UISwitch: \(String(describing: type(of: switchControl)))")
             case let view as UIView:
-                print("Captured UIView: \(String(describing: type(of: view)))")
+                osLog("Captured UIView: \(String(describing: type(of: view)))")
+            case let scrollView as UIScrollView:
+                osLog("Captured UIScrollView: \(String(describing: type(of: scrollView)))")
             case let viewController as UIViewController:
-                print("Captured UIViewController: \(String(describing: type(of: viewController)))")
+                osLog("Captured UIViewController: \(String(describing: type(of: viewController)))")
             default:
                 break
             }
         }
     }
+}
+
+extension UIView {
+    var name: String { String(describing: Mirror(reflecting: self).subjectType) }
+}
+
+extension UIImage {
+    var data: Data { pngData()! }
 }
