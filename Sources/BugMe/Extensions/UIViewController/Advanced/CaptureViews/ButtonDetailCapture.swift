@@ -9,11 +9,11 @@ import UIKit
 
 class ButtonDetailCapture {
     let button: UIButton
-    let controller: String
+    let title: String
     
-    init(button: UIButton, controller: String) {
+    init(button: UIButton, title: String?) {
         self.button = button
-        self.controller = controller
+        self.title = title ?? "Unknown Button"
     }
     
     @MainActor
@@ -56,22 +56,9 @@ class ButtonDetailCapture {
         properties.append(BMBlockItemProperties(key: "Shadow Opacity", value: "\(button.layer.shadowOpacity)"))
         properties.append(BMBlockItemProperties(key: "Shadow Radius", value: "\(button.layer.shadowRadius)"))
         
-        // Image handling
-        var imagePath: String? = nil
-        if let buttonImage = button.currentImage {
-            if let imageData = buttonImage.pngData() {
-                let fileName = "button_\(controller)_\(button.tag)_image"
-                if let url = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-                    .appendingPathComponent(fileName)
-                    .appendingPathExtension("png") {
-                    try? imageData.write(to: url)
-                    imagePath = url.absoluteString
-                }
-            }
-        }
         
         let title = button.title(for: .normal) ?? "Button \(button.tag)"
-        
+        let imagePath: String? = try? button.takeScreenshot(fileName: title).filePath.absoluteString
         return BMBlockItem(
             imagePath: imagePath,
             title: title,

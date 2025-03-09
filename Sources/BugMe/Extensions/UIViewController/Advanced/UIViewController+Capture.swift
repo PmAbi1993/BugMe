@@ -17,7 +17,7 @@ extension UIViewController {
         children.forEach { child in
             switch child.value {
             case let button as UIButton:
-                let buttonDetailCapture = ButtonDetailCapture(button: button, controller: self.description)
+                let buttonDetailCapture = ButtonDetailCapture(button: button, title: child.label)
                 vcItems.append(buttonDetailCapture.getButtonDetails())
             case let label as UILabel:
                 let labelDetailCapture = LabelDetailCapture(label: label, title: child.label)
