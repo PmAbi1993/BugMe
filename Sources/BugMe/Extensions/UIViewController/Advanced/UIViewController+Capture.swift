@@ -23,25 +23,38 @@ extension UIViewController {
                 let labelDetailCapture = LabelDetailCapture(label: label, title: child.label)
                 vcItems.append(labelDetailCapture.getLabelDetails())
             case let imageView as UIImageView:
-                break
+                let imageDetailCapture = ImageViewDetailCapture(imageView: imageView, title: child.label)
+                vcItems.append(imageDetailCapture.getImageViewDetails())
             case let textField as UITextField:
-                break
+                let textFieldDetailCapture = TextFieldDetailCapture(textField: textField, title: child.label)
+                vcItems.append(textFieldDetailCapture.getTextFieldDetails())
             case let textView as UITextView:
-                break
+                let textViewDetailCapture = TextViewDetailCapture(textView: textView, title: child.label)
+                vcItems.append(textViewDetailCapture.getTextViewDetails())
             case let tableView as UITableView:
-                break
+                let tableViewDetailCapture = TableViewDetailCapture(tableView: tableView, title: child.label)
+                vcItems.append(tableViewDetailCapture.getTableViewDetails())
             case let collectionView as UICollectionView:
-                break
+                let collectionViewDetailCapture = CollectionViewDetailCapture(collectionView: collectionView, title: child.label)
+                vcItems.append(collectionViewDetailCapture.getCollectionViewDetails())
             case let stackView as UIStackView:
-                break
+                let stackViewDetailCapture = StackViewDetailCapture(stackView: stackView, title: child.label)
+                vcItems.append(stackViewDetailCapture.getStackViewDetails())
             case let switchControl as UISwitch:
-                break
+                let switchControlDetailCapture = SwitchControlDetailCapture(switchControl: switchControl, title: child.label)
+                vcItems.append(switchControlDetailCapture.getSwitchDetails())
             case let scrollView as UIScrollView:
-                break
+                let scrollViewDetailCapture = ScrollViewDetailCapture(scrollView: scrollView, title: child.label)
+                vcItems.append(scrollViewDetailCapture.getScrollViewDetails())
             case let view as UIView:
-                break
+                let viewDetailCapture = ViewDetailCapture(view: view, title: child.label)
+                vcItems.append(viewDetailCapture.getViewDetails())
             default:
-                break
+                if let title = child.label {
+                    let properties: [BMBlockItemProperties] = []
+                    let defaultItem = BMBlockItem(imagePath: nil, title: title, properties: properties)
+                    vcItems.append(defaultItem)
+                }
             }
         }
         let filePath = try? self.view.takeScreenshot(fileName: controllerName).filePath.absoluteString
