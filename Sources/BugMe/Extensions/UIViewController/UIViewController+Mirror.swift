@@ -8,19 +8,30 @@
 import UIKit
 import OSLog
 
-struct BMElementProperties {
-    let propertyName: String
-    let propertyValue: String
+public struct BMElementProperties {
+    public let propertyName: String
+    public let propertyValue: String
+    
+    public init(propertyName: String, propertyValue: String) {
+        self.propertyName = propertyName
+        self.propertyValue = propertyValue
+    }
 }
 
-struct BMElementInformation {
-    let image: UIImage?
-    let elementName: String
-    let elementType: String
-    let properties: [BMElementProperties]
+public struct BMElementInformation {
+    public let image: UIImage?
+    public let elementName: String
+    public let elementType: String
+    public let properties: [BMElementProperties]
     
-    // Helper method to format the properties for logging
-    func formattedDescription() -> String {
+    public init(image: UIImage?, elementName: String, elementType: String, properties: [BMElementProperties]) {
+        self.image = image
+        self.elementName = elementName
+        self.elementType = elementType
+        self.properties = properties
+    }
+    
+    public func formattedDescription() -> String {
         var result = "Captured \(elementType): \(elementName)\n"
         result += "-- Properties --\n"
         
@@ -32,9 +43,14 @@ struct BMElementInformation {
     }
 }
 
-struct BMElementBlock {
-    let controller: String
-    let elements: [BMElementInformation]
+public struct BMElementBlock {
+    public let controller: String
+    public let elements: [BMElementInformation]
+    
+    public init(controller: String, elements: [BMElementInformation]) {
+        self.controller = controller
+        self.elements = elements
+    }
 }
 
 public extension UIViewController {
@@ -43,10 +59,8 @@ public extension UIViewController {
     func capture() {
         let controllerName = self.controllerName
         
-        // Clear any previous captures for this controller
         BMElementManager.shared.clearElements(forController: controllerName)
         
-        // Capture all elements
         for child in Mirror(reflecting: self).children {
             switch child.value {
             case let button as UIButton:
@@ -90,11 +104,12 @@ public extension UIViewController {
             }
         }
         
-        // Log the element block once all elements are captured
         BMElementManager.shared.logElementBlock(forController: controllerName)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            let url: URL? = try? HTMLExport.generateAndOpenReport()
+            print("~~~~~URL: \(url?.absoluteString)")
+        }
     }
-    
-    // MARK: - UI Element Capture Methods
     
     private func captureButton(_ button: UIButton, label: String?) {
         let elementName = label ?? "No label found"
@@ -123,7 +138,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -146,7 +160,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -175,7 +188,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -201,7 +213,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -225,7 +236,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -257,7 +267,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -283,7 +292,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -306,7 +314,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -328,7 +335,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -344,7 +350,6 @@ public extension UIViewController {
         properties.append(BMElementProperties(propertyName: "Shows Indicators", propertyValue: "H:\(scrollView.showsHorizontalScrollIndicator) V:\(scrollView.showsVerticalScrollIndicator)"))
         properties.append(BMElementProperties(propertyName: "Hidden", propertyValue: "\(scrollView.isHidden)"))
         properties.append(BMElementProperties(propertyName: "Frame", propertyValue: "\(scrollView.frame)"))
-        // TODO: Create scrolled complete image
         let elementInfo = BMElementInformation(
             image: scrollView.captureEntireScrollView(),
             elementName: elementName,
@@ -352,7 +357,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -376,7 +380,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -403,7 +406,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
@@ -418,7 +420,6 @@ public extension UIViewController {
             properties: properties
         )
         
-        // Add to manager instead of logging
         BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
 }

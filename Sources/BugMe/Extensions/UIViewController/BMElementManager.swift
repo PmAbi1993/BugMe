@@ -23,7 +23,7 @@ public class BMElementManager: @unchecked Sendable {
     /// - Parameters:
     ///   - element: The captured element information
     ///   - controllerName: The name of the controller where the element was captured
-    func addElement(_ element: BMElementInformation, forController controllerName: String) {
+    public func addElement(_ element: BMElementInformation, forController controllerName: String) {
         if capturedElements[controllerName] == nil {
             capturedElements[controllerName] = []
         }
@@ -33,14 +33,14 @@ public class BMElementManager: @unchecked Sendable {
     /// Get all captured elements for a controller
     /// - Parameter controllerName: The name of the controller
     /// - Returns: Array of captured element information
-    func getElements(forController controllerName: String) -> [BMElementInformation] {
+    public func getElements(forController controllerName: String) -> [BMElementInformation] {
         return capturedElements[controllerName] ?? []
     }
     
     /// Create a BMElementBlock from captured elements for a controller
     /// - Parameter controllerName: The name of the controller
     /// - Returns: BMElementBlock containing the controller name and captured elements
-    func createElementBlock(forController controllerName: String) -> BMElementBlock? {
+    public func createElementBlock(forController controllerName: String) -> BMElementBlock? {
         guard let elements = capturedElements[controllerName], !elements.isEmpty else {
             return nil
         }
@@ -75,5 +75,17 @@ public class BMElementManager: @unchecked Sendable {
     /// Clear all captured elements
     public func clearAllElements() {
         capturedElements.removeAll()
+    }
+    
+    /// Get all controller names that have captured elements
+    /// - Returns: Array of controller names with captured elements
+    public func getAllControllerNames() -> [String] {
+        return Array(capturedElements.keys)
+    }
+    
+    /// Get all captured elements
+    /// - Returns: Dictionary with controller names as keys and arrays of element information as values
+    public func getAllElements() -> [String: [BMElementInformation]] {
+        return capturedElements
     }
 }
