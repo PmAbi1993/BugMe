@@ -32,12 +32,21 @@ struct BMElementInformation {
     }
 }
 
+struct BMElementBlock {
+    let controller: String
+    let elements: [BMElementInformation]
+}
+
 public extension UIViewController {
     var controllerName: String { String(describing: type(of: self)) }
     
     func capture() {
-        let controllerName: String = String(describing: type(of: self))
-        osLog("Controller: \(controllerName)")
+        let controllerName = self.controllerName
+        
+        // Clear any previous captures for this controller
+        BMElementManager.shared.clearElements(forController: controllerName)
+        
+        // Capture all elements
         for child in Mirror(reflecting: self).children {
             switch child.value {
             case let button as UIButton:
@@ -80,6 +89,9 @@ public extension UIViewController {
                 captureUnhandledType(child.value, label: child.label)
             }
         }
+        
+        // Log the element block once all elements are captured
+        BMElementManager.shared.logElementBlock(forController: controllerName)
     }
     
     // MARK: - UI Element Capture Methods
@@ -111,7 +123,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureLabel(_ label: UILabel, name: String?) {
@@ -133,7 +146,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureImageView(_ imageView: UIImageView, name: String?) {
@@ -161,7 +175,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureTextField(_ textField: UITextField, name: String?) {
@@ -186,7 +201,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureTextView(_ textView: UITextView, name: String?) {
@@ -209,7 +225,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureTableView(_ tableView: UITableView, name: String?) {
@@ -240,7 +257,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureCollectionView(_ collectionView: UICollectionView, name: String?) {
@@ -265,7 +283,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureStackView(_ stackView: UIStackView, name: String?) {
@@ -287,7 +306,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureSwitch(_ switchControl: UISwitch, name: String?) {
@@ -308,7 +328,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureScrollView(_ scrollView: UIScrollView, name: String?) {
@@ -331,7 +352,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureView(_ view: UIView, name: String?) {
@@ -354,7 +376,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureViewController(_ viewController: UIViewController, name: String?) {
@@ -380,7 +403,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
     
     private func captureUnhandledType(_ value: Any, label: String?) {
@@ -394,7 +418,8 @@ public extension UIViewController {
             properties: properties
         )
         
-        osLog(elementInfo.formattedDescription())
+        // Add to manager instead of logging
+        BMElementManager.shared.addElement(elementInfo, forController: controllerName)
     }
 }
 
