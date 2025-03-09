@@ -89,7 +89,14 @@ public struct NetworkCallModel: Identifiable, Equatable, Hashable {
         log += "\n--- Request ---\n"
         log += "URL: \(url?.absoluteString ?? "N/A")\n"
         log += "Method: \(method ?? "N/A")\n"
-        log += "Headers: \(requestHeaders?.description ?? "N/A")\n"
+        if let requestHeaders = requestHeaders,
+           JSONSerialization.isValidJSONObject(requestHeaders),
+           let jsonHeaders = try? JSONSerialization.data(withJSONObject: requestHeaders),
+           let jsonData = String(data: jsonHeaders, encoding: .utf8) {
+            log += "Headers: \(jsonData)\n"
+        } else {
+            log += "Headers: \(requestHeaders?.description ?? "N/A")\n"
+        }
         if let bodyString = requestBodyString {
             log += "Body: \(bodyString)\n"
         }
