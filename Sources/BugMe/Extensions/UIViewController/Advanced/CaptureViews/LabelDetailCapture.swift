@@ -58,7 +58,6 @@ class LabelDetailCapture {
         let title = label.text ?? "Label \(label.tag)"
         let imagePath = try? label.takeScreenshot(fileName: title).filePath.absoluteString
         return BMBlockItem(
-            isView: true,
             imagePath: imagePath,
             title: title,
             properties: properties

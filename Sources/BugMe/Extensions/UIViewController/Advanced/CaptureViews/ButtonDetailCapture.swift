@@ -73,7 +73,6 @@ class ButtonDetailCapture {
         let title = button.title(for: .normal) ?? "Button \(button.tag)"
         
         return BMBlockItem(
-            isView: true,
             imagePath: imagePath,
             title: title,
             properties: properties

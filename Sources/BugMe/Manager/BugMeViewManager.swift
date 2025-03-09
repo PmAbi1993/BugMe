@@ -13,7 +13,6 @@ struct BMBlock {
 }
 
 struct BMBlockItem {
-    let isView: Bool
     let imagePath: String?
     let title: String
     let properties: [BMBlockItemProperties]
