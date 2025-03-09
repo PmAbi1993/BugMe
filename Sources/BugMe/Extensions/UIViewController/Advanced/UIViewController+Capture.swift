@@ -8,6 +8,8 @@
 import UIKit
 
 extension UIViewController {
+    // TODO: Move to appropriate place
+    var controllerName: String { String(describing: type(of: self)) }
     
     func captureAllItems() {
         let children = Mirror(reflecting: self).children
