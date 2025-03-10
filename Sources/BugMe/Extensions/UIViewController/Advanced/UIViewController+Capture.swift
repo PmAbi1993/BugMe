@@ -64,6 +64,6 @@ extension UIViewController {
             elements: vcItems
         )
         BugMeViewManager.shared.addBlock(block: controllerInformation)
-        BugMeViewManager.shared.generateReport()
+        BugMeViewManager.shared.advancedGenerateReport()
     }
 }

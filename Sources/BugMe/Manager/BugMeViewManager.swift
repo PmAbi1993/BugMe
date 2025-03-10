@@ -51,4 +51,22 @@ class BugMeViewManager: @unchecked Sendable {
         let fileURL = try? saveToDocuments(data: htmlData, fileName: "Sam", fileExtension: "html")
         print(fileURL)
     }
+    @MainActor
+    func advancedGenerateReport() {
+        let builder: HTMLBuilder = HTMLBuilder(contents: [])
+        let viewBlocks: [HTMLContent] = BugMeViewManager.shared.dashBoardData.map({
+            ViewBlockBuilder(viewBlock: $0)
+        })
+        let viewSectionHolder = HTMLSection(title: "View Blocks", icon: "plus", contents: viewBlocks)
+        builder.addSection(viewSectionHolder)
+        let networkdData = NetworkCapture.shared.capturedCalls.map({ NetworkBlockBuilder(networkCallModel: $0) })
+        let networkSection = HTMLSection(title: "Network Calls", icon: "network", contents: networkdData)
+        builder.addSection(networkSection)
+        let html = builder.generateFullHTML()
+        guard let htmlData = html.data(using: .utf8) else {
+            return
+        }
+        let fileURL = try? saveToDocuments(data: htmlData, fileName: "Sam", fileExtension: "html")
+        print(fileURL)
+    }
 }
