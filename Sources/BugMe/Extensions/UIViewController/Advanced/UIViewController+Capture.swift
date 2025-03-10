@@ -11,7 +11,7 @@ extension UIViewController {
     // TODO: Move to appropriate place
     var controllerName: String { String(describing: type(of: self)) }
     
-    func captureAllItems() {
+    public func captureAllItems() {
         let children = Mirror(reflecting: self).children
         var vcItems: [BMBlockItem] = []
         children.forEach { child in
@@ -64,5 +64,6 @@ extension UIViewController {
             elements: vcItems
         )
         BugMeViewManager.shared.addBlock(block: controllerInformation)
+        BugMeViewManager.shared.generateReport()
     }
 }

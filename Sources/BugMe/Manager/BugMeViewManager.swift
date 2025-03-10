@@ -39,4 +39,16 @@ class BugMeViewManager: @unchecked Sendable {
     func clearAllBlocks() {
         dashBoardData.removeAll()
     }
+    @MainActor
+    func generateReport() {
+        let viewElements = BugMeViewManager.shared.dashBoardData.map({ ViewBlockBuilder(viewBlock: $0) })
+        let networkdData = NetworkCapture.shared.capturedCalls.map({ NetworkBlockBuilder(networkCallModel: $0) })
+        let builder: HTMLBuilder = HTMLBuilder(contents: [viewElements, networkdData])
+        let html = builder.generateFullHTML()
+        guard let htmlData = html.data(using: .utf8) else {
+            return
+        }
+        let fileURL = try? saveToDocuments(data: htmlData, fileName: "Sam", fileExtension: "html")
+        print(fileURL)
+    }
 }

@@ -12,7 +12,7 @@ protocol HTMLContent {
 }
 
 class HTMLBuilder: @unchecked Sendable {
-    let contents: [HTMLContent]
+    let contents: [[HTMLContent]]
     let lineSeparator: String = "\n"
     
     // TODO: Enhance HTMLBuilder to support:
@@ -21,13 +21,14 @@ class HTMLBuilder: @unchecked Sendable {
 //    3. Add custom JavaScript
 //    4. Add custom footer
     
-    init(contents: [HTMLContent]) {
+    init(contents: [[HTMLContent]]) {
         self.contents = contents
     }
     
     func generateFullHTML() -> String {
-        contents.map {
-            $0.html()
-        }.joined(separator: lineSeparator)
+        contents.map({ section in
+            let sectionContent = section.map({ $0.html() }).joined(separator: lineSeparator)
+            return sectionContent
+        }).joined(separator: lineSeparator)
     }
 }
