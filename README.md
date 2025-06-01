@@ -17,7 +17,7 @@ BugMe is distributed with Swift Package Manager.
 ```swift
 // In Package.swift
 dependencies: [
-    .package(url: "https://github.com/<your-org>/BugMe.git", from: "1.0.0")
+    .package(url: "https://github.com/PmAbi1993/BugMe.git", from: "1.0.0")
 ]
 
 .target(
