@@ -38,7 +38,7 @@ NetworkCapture.shared.enable()
 let screenshot = someView.takeScreenshot()
 
 // Generate an HTML report when you're ready
-await BugMeViewManager.shared.advancedGenerateReport()
+BugMeViewManager.shared.advancedGenerateReport()
 ```
 
 ## Requirements
